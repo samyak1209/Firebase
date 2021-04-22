@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/Login/Signup.dart';
+import 'package:task1/analytics/Analytics.dart';
 import 'package:task1/components/HomePage.dart';
 
 
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Signup(),
+      navigatorObservers: [Analytics.observer],
     );
   }
 }

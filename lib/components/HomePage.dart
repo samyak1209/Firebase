@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/Login/Signup.dart';
 import 'package:task1/Login/auth.dart';
+import 'package:task1/analytics/Analytics.dart';
 import 'package:task1/components/HomeScreen.dart';
 
 import 'Form.dart';
@@ -34,6 +35,7 @@ class _HomePageState extends State<HomePage> {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.remove('email');
             prefs.remove('uid');
+            Analytics.analytics.logEvent(name: "logout",parameters: <String,dynamic>{});
             Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context)=>Signup()));
           })
         ],
@@ -42,6 +44,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           onTap: (index){setState(() {
             curindex=index;
+            Analytics.analytics.logEvent(name: curindex==0?"home_screen":"form_screen");
           });},
           currentIndex: curindex,
           items: [

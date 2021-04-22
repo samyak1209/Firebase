@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/Login/auth.dart';
+import 'package:task1/analytics/Analytics.dart';
 import 'package:task1/components/HomePage.dart';
 
 class SignIm extends StatefulWidget {
@@ -87,11 +88,11 @@ class _SignImState extends State<SignIm> {
                   setState(() {
                     Login=true;
                   });
+                  Analytics.analytics.logLogin(loginMethod: "email");
                   Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(builder: (context)=> HomePage()), (route) => false);
                 }
               }
             },)
-
         ],
       ),),)
     );

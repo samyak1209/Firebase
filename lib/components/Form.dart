@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:task1/analytics/Analytics.dart';
 
 class FormPage extends StatefulWidget {
   final uid;
@@ -24,6 +25,7 @@ class _FormPageState extends State<FormPage> {
           "createDate" : time,
           "userid":widget.uid,
         }).then((value){
+          Analytics.analytics.logEvent(name: "data_added",parameters: null);
       print(value.id);
     });
   }

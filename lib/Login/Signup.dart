@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/Login/SignIn.dart';
+import 'package:task1/analytics/Analytics.dart';
 import 'package:task1/components/HomePage.dart';
 
 import 'auth.dart';
@@ -19,7 +20,6 @@ class _SignupState extends State<Signup> {
   bool button=false;
   final _formKey = GlobalKey<FormState>();
   final AuthService _auth = AuthService();
-  FirebaseUser user1;
   bool Login=false;
 
 
@@ -102,7 +102,11 @@ class _SignupState extends State<Signup> {
                   Login=true;
                 });
                 if(Login){
-                  Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>HomePage()));
+                  Analytics.analytics.logEvent(name: "home_page",parameters: <String,dynamic>{});
+                  Navigator.pushReplacement(context,MaterialPageRoute(
+                      builder:(context)=>HomePage(),
+                    settings: RouteSettings(name: "HomePage")
+                  ));
                 }
                 }).catchError((e){
                   print(e);
