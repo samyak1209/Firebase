@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Signup(),
       navigatorObservers: [Analytics.observer],
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task1/Login/SignIn.dart';
 import 'package:task1/analytics/Analytics.dart';
 import 'package:task1/components/HomePage.dart';
+import 'package:task1/util/ProgressIndicator.dart';
 
 import 'auth.dart';
 
@@ -45,7 +46,8 @@ class _SignupState extends State<Signup> {
               labelText: 'Enter name'
             ),
             keyboardType: TextInputType.name,
-              validator: validateName,autovalidate: true,
+              validator: validateName,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
 
           ),),
           Container(padding: EdgeInsets.only(bottom: 20),
@@ -56,7 +58,7 @@ class _SignupState extends State<Signup> {
                   labelText: 'Enter Email'
               ),
               keyboardType: TextInputType.emailAddress,
-              validator: validateEmail,autovalidate: true,
+              validator: validateEmail,autovalidateMode: AutovalidateMode.onUserInteraction,
             ),),
           Container(padding: EdgeInsets.only(bottom: 20),
             child: TextFormField(
@@ -79,12 +81,13 @@ class _SignupState extends State<Signup> {
               ),
               keyboardType: TextInputType.visiblePassword,
               obscureText: _iButt,
-              validator: validatePass,autovalidate: true,
+              validator: validatePass,autovalidateMode: AutovalidateMode.onUserInteraction,
             ),),
           RaisedButton(
             disabledColor: Colors.grey,
           color: Colors.green,
           onPressed: () async {
+              ProgressHelper.displayProgressDialog(context);
               if(_formKey.currentState.validate()){
                 await _auth.registerWithEmailAndPassword(email.text, pass.text,name.text).then((value) async {
                 print('signed in as ${value.uid}');
@@ -103,6 +106,7 @@ class _SignupState extends State<Signup> {
                 });
                 if(Login){
                   Analytics.analytics.logEvent(name: "home_page",parameters: <String,dynamic>{});
+                  ProgressHelper.closeProgressDialog(context);
                   Navigator.pushReplacement(context,MaterialPageRoute(
                       builder:(context)=>HomePage(),
                     settings: RouteSettings(name: "HomePage")
@@ -112,11 +116,11 @@ class _SignupState extends State<Signup> {
                   print(e);
                 });
               }},
-            child: Text('HI'),
+            child: Text('SignUp'),
           ),
           Container(padding: EdgeInsets.only(top: 10),
-          child: InkWell(child: Text('LogIn'),
-          onTap: (){
+          child: FlatButton(child: Text('LogIn'),
+          onPressed: (){
             Navigator.push(context, new MaterialPageRoute(builder: (context)=>SignIm()));
           },),)
 

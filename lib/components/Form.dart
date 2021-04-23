@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task1/analytics/Analytics.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FormPage extends StatefulWidget {
   final uid;
@@ -15,6 +16,18 @@ class _FormPageState extends State<FormPage> {
   TextEditingController detail=TextEditingController();
   TextEditingController type=TextEditingController();
   DateTime time=DateTime.now();
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _flutterLocalNotificationsPlugin=FlutterLocalNotificationsPlugin();
+    var android=AndroidInitializationSettings('mipmap/ic_launcher');
+    var ios =IOSInitializationSettings();
+    var init=InitializationSettings(android: android,iOS: ios);
+    _flutterLocalNotificationsPlugin.initialize(init);
+  }
 
   void _onPressed() {
     firestoreInstance.collection("data").add(
@@ -23,11 +36,21 @@ class _FormPageState extends State<FormPage> {
           "id":id.text,
           "type" : type.text,
           "createDate" : time,
-          "userid":widget.uid,
+          "userid":widget.uid.toString(),
         }).then((value){
           Analytics.analytics.logEvent(name: "data_added",parameters: null);
       print(value.id);
     });
+    print(widget.uid);
+    showNotification();
+
+  }
+  
+  showNotification() async {
+    var android =AndroidNotificationDetails("id","name","description");
+    var ios= IOSNotificationDetails();
+    var platform=NotificationDetails(android: android,iOS: ios);
+    await _flutterLocalNotificationsPlugin.show(0,"Data","Data added successfully", platform);
   }
 
   @override

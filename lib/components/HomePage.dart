@@ -5,6 +5,7 @@ import 'package:task1/Login/Signup.dart';
 import 'package:task1/Login/auth.dart';
 import 'package:task1/analytics/Analytics.dart';
 import 'package:task1/components/HomeScreen.dart';
+import 'package:task1/util/ProgressIndicator.dart';
 
 import 'Form.dart';
 
@@ -31,20 +32,23 @@ class _HomePageState extends State<HomePage> {
         title: Text('Home'),
         actions: [
           IconButton(icon: Icon(Icons.logout), onPressed: () async {
+            ProgressHelper.displayProgressDialog(context);
             AuthService().signOut();
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.remove('email');
             prefs.remove('uid');
-            Analytics.analytics.logEvent(name: "logout",parameters: <String,dynamic>{});
+            Analytics.analytics.logEvent(name: "logout",parameters: {"app_bar":"logout_button"});
+            ProgressHelper.closeProgressDialog(context);
             Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context)=>Signup()));
           })
         ],
       ),
       body: tabs[curindex],
         bottomNavigationBar: BottomNavigationBar(
-          onTap: (index){setState(() {
+          onTap: (index){
+            setState(() {
             curindex=index;
-            Analytics.analytics.logEvent(name: curindex==0?"home_screen":"form_screen");
+            Analytics.analytics.logEvent(name: curindex==0?"home_screen":"form_screen",parameters: {"homepage":"after_auth"});
           });},
           currentIndex: curindex,
           items: [

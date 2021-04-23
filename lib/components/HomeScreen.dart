@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task1/components/Update.dart';
+import 'package:task1/util/ProgressIndicator.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -14,11 +15,6 @@ class _HomeScreenState extends State<HomeScreen> {
       r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
 
   int curindex=0;
-  Future<String> get_data(DocumentReference doc_ref) async {
-    DocumentSnapshot docSnap = await doc_ref.get();
-    var doc_id2 = docSnap.reference.documentID;
-    return doc_id2;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //print(doc_id);
                       //DateTime s=DateTime.parse(products['createdDate'].toString());
                       //String format1 = DateFormat('d-MMMM-yyyy HH:mm a ').format(s);
-                      return GestureDetector(
+                      return InkWell(
                         child: Card(
                           child: Container(padding: EdgeInsets.all(15),
                             child: Row(children: [
@@ -62,14 +58,32 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],mainAxisAlignment: MainAxisAlignment.spaceBetween,),
                           ),
                         ),
-                        onTap:(){ Navigator.of(context).push(new MaterialPageRoute(builder: (context)=>UpdateData(
+                        onTap:(){
+                          Navigator.of(context).push(new MaterialPageRoute(builder: (context)=>UpdateData(
                           docid: products.id,
                           id: products['id'].toString(),
                           userid: products['userid'].toString(),
                           detail: products['detail'].toString(),
                           createDate: products['createDate'].toString(),
                           type: products['type'].toString(),
-                        )));}
+                        )));},
+                        onLongPress: (){
+                          showDialog(context: context,
+                              child: Padding(
+                                padding: const EdgeInsets.all(40.0),
+                                child: Center(child: Container(color: Colors.white,height: 100,
+                                child: Column(
+                                  children: [
+                                    Align(alignment: Alignment.centerRight,child: GestureDetector(child: Icon(Icons.cancel),onTap: (){Navigator.pop(context);},),),
+                                   FlatButton(child: Text("Delete Entry",style: TextStyle(color: Colors.red),),
+                                   onPressed: (){
+                                     firestoreInstance.collection("data").doc(products.id).delete();
+                                     Navigator.pop(context);
+                                   },)
+                                  ],
+                                ),),),
+                              ));
+                        },
                       );
                     },
                   );

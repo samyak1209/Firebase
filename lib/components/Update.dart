@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:task1/util/ProgressIndicator.dart';
 
 class UpdateData extends StatefulWidget {
   final docid;
@@ -21,6 +23,7 @@ class _UpdateDataState extends State<UpdateData> {
   TextEditingController detail=TextEditingController();
   TextEditingController type=TextEditingController();
   DateTime time=DateTime.now();
+  FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
 
   @override
@@ -30,6 +33,11 @@ class _UpdateDataState extends State<UpdateData> {
       detail.text=widget.detail;
       type.text=widget.type;
     });
+    _flutterLocalNotificationsPlugin=FlutterLocalNotificationsPlugin();
+    var android=AndroidInitializationSettings('mipmap/ic_launcher');
+    var ios =IOSInitializationSettings();
+    var init=InitializationSettings(android: android,iOS: ios);
+    _flutterLocalNotificationsPlugin.initialize(init);
   }
 
   void _onPressedUpdate() {
@@ -44,6 +52,15 @@ class _UpdateDataState extends State<UpdateData> {
       }).then((_) {
       print("success!");
     });
+    Navigator.pop(context);
+    showNotification();
+  }
+
+  showNotification() async {
+    var android =AndroidNotificationDetails("id","name","description");
+    var ios= IOSNotificationDetails();
+    var platform=NotificationDetails(android: android,iOS: ios);
+    await _flutterLocalNotificationsPlugin.show(0,"Data","Data updated successfully", platform);
   }
 
   @override
