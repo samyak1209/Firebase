@@ -1,6 +1,6 @@
 # FireBase
 
-A new Flutter application using Firebase Authentication,Cloud Firestore,Firebase Analytics.
+A new Flutter application using Firebase Authentication,Cloud Firestore,Firebase Analytics,Push Notification.
 
 
 A few resources to get you started if this is your first Flutter project:
